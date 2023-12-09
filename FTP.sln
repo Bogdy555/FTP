@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FTP_Server", "FTP_Server\FTP_Server.vcxproj", "{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1} = {4FD8B32F-3627-498D-8B23-C645D291F2A1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FTP_Client", "FTP_Client\FTP_Client.vcxproj", "{6EE6522E-2A82-459D-9672-8B73FEE953D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1} = {4FD8B32F-3627-498D-8B23-C645D291F2A1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FTP_API", "FTP_API\FTP_API.vcxproj", "{4FD8B32F-3627-498D-8B23-C645D291F2A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E202F9C8-645B-4CB5-99C1-B0E69BAF632D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Build Debug x64.sh = Build Debug x64.sh
+		Build Debug x86.sh = Build Debug x86.sh
+		Build Release x64.sh = Build Release x64.sh
+		Build Release x86.sh = Build Release x86.sh
+		Build.sh = Build.sh
+		Clean.sh = Clean.sh
+		ReadMe.md = ReadMe.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Debug|x64.ActiveCfg = Debug|x64
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Debug|x64.Build.0 = Debug|x64
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Debug|x86.ActiveCfg = Debug|Win32
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Debug|x86.Build.0 = Debug|Win32
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Release|x64.ActiveCfg = Release|x64
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Release|x64.Build.0 = Release|x64
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Release|x86.ActiveCfg = Release|Win32
+		{4E4B3157-CBB6-4455-A72B-8D3D9F0240AC}.Release|x86.Build.0 = Release|Win32
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Debug|x64.ActiveCfg = Debug|x64
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Debug|x64.Build.0 = Debug|x64
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Debug|x86.ActiveCfg = Debug|Win32
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Debug|x86.Build.0 = Debug|Win32
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Release|x64.ActiveCfg = Release|x64
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Release|x64.Build.0 = Release|x64
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Release|x86.ActiveCfg = Release|Win32
+		{6EE6522E-2A82-459D-9672-8B73FEE953D7}.Release|x86.Build.0 = Release|Win32
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Debug|x64.ActiveCfg = Debug|x64
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Debug|x64.Build.0 = Debug|x64
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Debug|x86.ActiveCfg = Debug|Win32
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Debug|x86.Build.0 = Debug|Win32
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Release|x64.ActiveCfg = Release|x64
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Release|x64.Build.0 = Release|x64
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Release|x86.ActiveCfg = Release|Win32
+		{4FD8B32F-3627-498D-8B23-C645D291F2A1}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEE2120B-A3AB-4E99-A405-D40E5D3D5FEE}
+	EndGlobalSection
+EndGlobal
