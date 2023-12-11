@@ -43,6 +43,8 @@ namespace FTP_API
 			bool SendBuff(const char* _Buff, const size_t _BuffSize);
 			bool RecvBuff(char* _Buff, const size_t _BuffSize);
 
+			operator const SOCKET() const;
+
 			EndPoint& operator= (const EndPoint& _Other) = delete;
 			EndPoint& operator= (EndPoint&& _Other) noexcept;
 

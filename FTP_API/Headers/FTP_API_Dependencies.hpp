@@ -81,7 +81,15 @@ namespace FTP_API
 	namespace Multithreading
 	{
 
+#ifdef _WIN32
 
+		typedef uint32_t (*ThreadFnc)(void*);
+
+#endif
+
+		class Thread;
+
+		class Mutex;
 
 	}
 

@@ -242,6 +242,11 @@ bool FTP_API::Networking::EndPoint::RecvBuff(char* _Buff, const size_t _BuffSize
 	return true;
 }
 
+FTP_API::Networking::EndPoint::operator const SOCKET() const
+{
+	return Socket;
+}
+
 FTP_API::Networking::EndPoint& FTP_API::Networking::EndPoint::operator= (EndPoint&& _Other) noexcept
 {
 	FTP_API_ASSERT_MSG(Socket == INVALID_SOCKET, FTP_API_STRING_TYPE("Move failed on non empty EndPoint object!"));
