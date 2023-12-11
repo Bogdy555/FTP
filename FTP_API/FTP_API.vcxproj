@@ -162,11 +162,13 @@
     <ClInclude Include="Headers\FTP_API.hpp" />
     <ClInclude Include="Headers\FTP_API_Dependencies.hpp" />
     <ClInclude Include="Headers\FTP_API_Macros.hpp" />
+    <ClInclude Include="Headers\FTP_API_Multithreading.hpp" />
     <ClInclude Include="Headers\FTP_API_Networking.hpp" />
     <ClInclude Include="Headers\FTP_API_Templates.hpp" />
     <ClInclude Include="Headers\FTP_API_WinTargetVer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\FTP_API_Multithreading.cpp" />
     <ClCompile Include="Sources\FTP_API_Networking.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

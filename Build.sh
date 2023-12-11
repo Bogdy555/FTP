@@ -28,11 +28,13 @@ mkdir "./Objects/FTP_Client/$Configuration/$PlatformShortName/"
 
 
 
-g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Networking.cpp" $CPP_INCLUDE -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Networking.o"
+g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Networking.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Networking.o"
+g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Multithreading.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Multithreading.o"
 
 pushd "./Objects/FTP_API/$Configuration/$PlatformShortName/"
 
 ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_Networking.o"
+ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_Multithreading.o"
 
 popd
 

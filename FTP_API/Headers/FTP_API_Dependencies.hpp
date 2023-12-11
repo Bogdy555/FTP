@@ -12,7 +12,15 @@
 
 
 
+#pragma comment(lib, "Ws2_32.lib")
+
+
+
 #include "FTP_API_WinTargetVer.hpp"
+
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+
 #include <Windows.h>
 
 
@@ -25,7 +33,10 @@
 
 
 
-
+#include <unistd.h>
+#include <signal.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 
 
@@ -45,10 +56,29 @@
 
 
 
+#ifdef __unix__
+
+typedef int SOCKET;
+
+#define INVALID_SOCKET (SOCKET)(~0)
+#define SOCKET_ERROR -1
+#define NO_ERROR 0
+
+#endif
+
+
+
 namespace FTP_API
 {
 
 	namespace Networking
+	{
+
+		class EndPoint;
+
+	}
+
+	namespace Multithreading
 	{
 
 

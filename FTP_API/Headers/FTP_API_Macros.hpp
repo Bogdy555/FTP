@@ -206,8 +206,8 @@
 
 #define FTP_API_DEBUG_BREAK() raise(SIGTRAP)
 
-#define FTP_API_DEBUG_BREAK_MSG_A(Msg) FTP_API_PRINT_A(Msg); raise(SIGTRAP)
-#define FTP_API_DEBUG_BREAK_MSG_W(Msg) FTP_API_PRINT_W(Msg); raise(SIGTRAP)
+#define FTP_API_DEBUG_BREAK_MSG_A(Msg) FTP_API_PRINT_LINE_A(Msg); raise(SIGTRAP)
+#define FTP_API_DEBUG_BREAK_MSG_W(Msg) FTP_API_PRINT_LINE_W(Msg); raise(SIGTRAP)
 
 #ifdef UNICODE
 
@@ -289,6 +289,22 @@
 
 #define FTP_API_DEBUG_CALL(X)
 #define FTP_API_RELEASE_CALL(X) X
+
+#endif
+
+
+
+#ifdef _WIN32
+
+#define FTP_API_WIN_CALL(X) X
+#define FTP_API_LNX_CALL(X)
+
+#endif
+
+#ifdef __unix__
+
+#define FTP_API_WIN_CALL(X)
+#define FTP_API_LNX_CALL(X) X
 
 #endif
 
