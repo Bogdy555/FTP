@@ -33,7 +33,7 @@
 
 
 
-#include <unistd.h>
+#include <pthread.h>
 #include <signal.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -81,11 +81,8 @@ namespace FTP_API
 	namespace Multithreading
 	{
 
-#ifdef _WIN32
-
-		typedef uint32_t (*ThreadFnc)(void*);
-
-#endif
+		FTP_API_WIN_CALL(typedef uint32_t (__stdcall *ThreadFnc)(void*));
+		FTP_API_LNX_CALL(typedef void* (*ThreadFnc)(void*));
 
 		class Thread;
 
