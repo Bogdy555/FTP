@@ -2,70 +2,34 @@
 
 
 
+int main(const int _ArgumentsCount, const char** _Arguments)
+{
+	if (!_ArgumentsCount || !_Arguments)
+	{
+		return -1;
+	}
+
+	if (!FTP_Server::InputParser::CheckArgumentsValidity(_ArgumentsCount, _Arguments))
+	{
+		FTP_API_PRINT_LINE("Usage: FTP_Server ip port working_dir password");
+
+		return -1;
+	}
+
 #ifdef _WIN32
 
-int WINAPI wWinMain(_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance, _In_ LPWSTR _CmdLine, _In_ int _ShowCmd)
-{
-	FTP_API::Networking::Init();
-
-	FTP_API::Networking::EndPoint _Server;
-
-	_Server.Host("localhost", "5000");
-
-	while (true)
+	if (!FTP_API::Networking::Init())
 	{
-		FTP_API::Networking::EndPoint _Client;
+		FTP_API_PRINT_LINE("Network driver error");
 
-		_Server.GetNextClient(_Client);
-
-		char _Data[5];
-		_Client.RecvBuff(_Data, 4);
-		_Data[4] = '\0';
-		std::cout << _Data << '\n';
-
-		_Client.SendBuff("Buna", 4);
-
-		_Client.Disconnect();
+		return -1;
 	}
-
-	_Server.StopHosting();
-
-	FTP_API::Networking::Stop();
-
-	return 0;
-}
 
 #endif
 
 
 
-#ifdef __unix__
-
-int main()
-{
-	FTP_API::Networking::EndPoint _Server;
-
-	_Server.Host("localhost", "5000");
-
-	while (true)
-	{
-		FTP_API::Networking::EndPoint _Client;
-
-		_Server.GetNextClient(_Client);
-
-		char _Data[5];
-		_Client.RecvBuff(_Data, 4);
-		_Data[4] = '\0';
-		std::cout << _Data << '\n';
-
-		_Client.SendBuff("Buna", 4);
-
-		_Client.Disconnect();
-	}
-
-	_Server.StopHosting();
+	FTP_API_WIN_CALL(FTP_API::Networking::Stop());
 
 	return 0;
 }
-
-#endif

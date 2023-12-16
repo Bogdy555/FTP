@@ -30,30 +30,36 @@ mkdir "./Objects/FTP_Client/$Configuration/$PlatformShortName/"
 
 g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Networking.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Networking.o"
 g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Multithreading.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Multithreading.o"
+g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_Protocol.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_Protocol.o"
+g++ $CPP_FLAGS "./FTP_API/Sources/FTP_API_FileSystem.cpp" -o "./Objects/FTP_API/$Configuration/$PlatformShortName/FTP_API_FileSystem.o"
 
 pushd "./Objects/FTP_API/$Configuration/$PlatformShortName/"
 
 ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_Networking.o"
 ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_Multithreading.o"
+ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_Protocol.o"
+ar $AR_FLAGS "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" "./FTP_API_FileSystem.o"
 
 popd
 
 
 
 g++ $CPP_FLAGS "./FTP_Server/Sources/FTP_Server_EntryPoint.cpp" -I "$PWD/FTP_API/Headers/" -o "./Objects/FTP_Server/$Configuration/$PlatformShortName/FTP_Server_EntryPoint.o"
+g++ $CPP_FLAGS "./FTP_Server/Sources/FTP_Server_InputParser.cpp" -I "$PWD/FTP_API/Headers/" -o "./Objects/FTP_Server/$Configuration/$PlatformShortName/FTP_Server_InputParser.o"
 
 pushd "./Objects/FTP_Server/$Configuration/$PlatformShortName/"
 
-g++ $LNK_FLAGS "./FTP_Server_EntryPoint.o" "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" -o "../../../../Binaries/FTP_Server/$Configuration/$PlatformShortName/FTP_Server.out"
+g++ $LNK_FLAGS "./FTP_Server_EntryPoint.o" "./FTP_Server_InputParser.o" "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" -o "../../../../Binaries/FTP_Server/$Configuration/$PlatformShortName/FTP_Server.out"
 
 popd
 
 
 
 g++ $CPP_FLAGS "./FTP_Client/Sources/FTP_Client_EntryPoint.cpp" -I "$PWD/FTP_API/Headers/" -o "./Objects/FTP_Client/$Configuration/$PlatformShortName/FTP_Client_EntryPoint.o"
+g++ $CPP_FLAGS "./FTP_Client/Sources/FTP_Client_InputParser.cpp" -I "$PWD/FTP_API/Headers/" -o "./Objects/FTP_Client/$Configuration/$PlatformShortName/FTP_Client_InputParser.o"
 
 pushd "./Objects/FTP_Client/$Configuration/$PlatformShortName/"
 
-g++ $LNK_FLAGS "./FTP_Client_EntryPoint.o" "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" -o "../../../../Binaries/FTP_Client/$Configuration/$PlatformShortName/FTP_Client.out"
+g++ $LNK_FLAGS "./FTP_Client_EntryPoint.o" "./FTP_Client_InputParser.o" "../../../../Binaries/FTP_API/$Configuration/$PlatformShortName/FTP_API.a" -o "../../../../Binaries/FTP_Client/$Configuration/$PlatformShortName/FTP_Client.out"
 
 popd

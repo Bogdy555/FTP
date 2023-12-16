@@ -10,8 +10,6 @@
 
 #ifdef _WIN32
 
-
-
 #pragma comment(lib, "FTP_API.lib")
 
 #endif
@@ -39,7 +37,12 @@
 namespace FTP_Server
 {
 
+	namespace InputParser
+	{
 
+		enum ArgumentsIndexes : const size_t;
+
+	}
 
 }
 

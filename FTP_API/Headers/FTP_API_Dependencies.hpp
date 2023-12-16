@@ -45,6 +45,9 @@
 
 
 #include <iostream>
+#include <cstring>
+#include <string>
+#include <vector>
 
 
 
@@ -71,6 +74,8 @@ typedef int SOCKET;
 namespace FTP_API
 {
 
+	typedef uint8_t* BytesBuffer;
+
 	namespace Networking
 	{
 
@@ -87,6 +92,20 @@ namespace FTP_API
 		class Thread;
 
 		class Mutex;
+
+	}
+
+	namespace Protocol
+	{
+
+		enum RequestIds : const uint8_t;
+
+	}
+
+	namespace FileSystem
+	{
+
+
 
 	}
 

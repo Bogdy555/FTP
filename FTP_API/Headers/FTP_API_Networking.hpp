@@ -34,14 +34,28 @@ namespace FTP_API
 			~EndPoint();
 
 			bool Host(const char* _Address, const char* _Port);
-			void StopHosting();
 			bool GetNextClient(EndPoint& _NextClient, sockaddr* _Address = nullptr);
-
 			bool Connect(const char* _Address, const char* _Port);
 			void Disconnect();
 
-			bool SendBuff(const char* _Buff, const size_t _BuffSize);
-			bool RecvBuff(char* _Buff, const size_t _BuffSize);
+			bool SendBuff(const uint8_t* _Buff, const size_t _BuffSize);
+			bool SendInt8(const int8_t _Value);
+			bool SendInt16(const int16_t _Value);
+			bool SendInt32(const int32_t _Value);
+			bool SendInt64(const int64_t _Value);
+			bool SendUInt8(const uint8_t _Value);
+			bool SendUInt16(const uint16_t _Value);
+			bool SendUInt32(const uint32_t _Value);
+			bool SendUInt64(const uint64_t _Value);
+			bool RecvBuff(uint8_t* _Buff, const size_t _BuffSize);
+			bool RecvInt8(int8_t& _Value);
+			bool RecvInt16(int16_t& _Value);
+			bool RecvInt32(int32_t& _Value);
+			bool RecvInt64(int64_t& _Value);
+			bool RecvUInt8(uint8_t& _Value);
+			bool RecvUInt16(uint16_t& _Value);
+			bool RecvUInt32(uint32_t& _Value);
+			bool RecvUInt64(uint64_t& _Value);
 
 			operator const SOCKET() const;
 

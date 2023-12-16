@@ -10,6 +10,8 @@
 
 #include "FTP_Server_Dependencies.hpp"
 
+#include "FTP_Server_InputParser.hpp"
+
 
 
 #pragma pack(pop)

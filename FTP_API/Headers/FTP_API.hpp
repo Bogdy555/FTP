@@ -14,6 +14,10 @@
 
 #include "FTP_API_Multithreading.hpp"
 
+#include "FTP_API_Protocol.hpp"
+
+#include "FTP_API_FileSystem.hpp"
+
 
 
 #pragma pack(pop)

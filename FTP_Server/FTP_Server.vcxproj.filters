@@ -18,6 +18,9 @@
     <ClCompile Include="Sources\FTP_Server_EntryPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\FTP_Server_InputParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\FTP_Server.hpp">
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\FTP_Server_Templates.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\FTP_Server_InputParser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

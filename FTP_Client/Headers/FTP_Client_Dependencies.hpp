@@ -10,8 +10,6 @@
 
 #ifdef _WIN32
 
-
-
 #pragma comment(lib, "FTP_API.lib")
 
 #endif
@@ -39,7 +37,16 @@
 namespace FTP_Client
 {
 
+	extern FTP_API::Networking::EndPoint ServerConnection;
 
+	namespace InputParser
+	{
+
+		enum ArgumentsIndexes : const size_t;
+
+		enum ActionTypes : const uint8_t;
+
+	}
 
 }
 

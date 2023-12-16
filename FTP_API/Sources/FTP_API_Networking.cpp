@@ -43,12 +43,12 @@ FTP_API::Networking::EndPoint::EndPoint(EndPoint&& _Other) noexcept : Socket(_Ot
 
 FTP_API::Networking::EndPoint::~EndPoint()
 {
-	FTP_API_ASSERT_MSG(Socket == INVALID_SOCKET, FTP_API_STRING_TYPE("~EndPoint hit before cleanup!"));
+	FTP_API_ASSERT_MSG(Socket == INVALID_SOCKET, "~EndPoint hit before cleanup!");
 }
 
 bool FTP_API::Networking::EndPoint::Host(const char* _Address, const char* _Port)
 {
-	StopHosting();
+	Disconnect();
 
 	addrinfo* _AddressInfo = nullptr;
 
@@ -95,22 +95,9 @@ bool FTP_API::Networking::EndPoint::Host(const char* _Address, const char* _Port
 	return true;
 }
 
-void FTP_API::Networking::EndPoint::StopHosting()
-{
-	if (Socket == INVALID_SOCKET)
-	{
-		return;
-	}
-
-	FTP_API_WIN_CALL(closesocket(Socket));
-	FTP_API_LNX_CALL(close(Socket));
-
-	Socket = INVALID_SOCKET;
-}
-
 bool FTP_API::Networking::EndPoint::GetNextClient(EndPoint& _NextClient, sockaddr* _Address)
 {
-	FTP_API_ASSERT_MSG(_NextClient.Socket == INVALID_SOCKET, FTP_API_STRING_TYPE("Cleanup the EndPoint befor using it to get the next client!"));
+	FTP_API_ASSERT_MSG(_NextClient.Socket == INVALID_SOCKET, "Cleanup the EndPoint befor using it to get the next client!");
 
 	if (Socket == INVALID_SOCKET)
 	{
@@ -131,7 +118,7 @@ bool FTP_API::Networking::EndPoint::GetNextClient(EndPoint& _NextClient, sockadd
 
 	if (_NextClient.Socket == INVALID_SOCKET)
 	{
-		StopHosting();
+		Disconnect();
 		return false;
 	}
 
@@ -142,7 +129,7 @@ bool FTP_API::Networking::EndPoint::GetNextClient(EndPoint& _NextClient, sockadd
 			*_Address = { 0 };
 		}
 		_NextClient.Disconnect();
-		StopHosting();
+		Disconnect();
 		return false;
 	}
 
@@ -203,7 +190,7 @@ void FTP_API::Networking::EndPoint::Disconnect()
 	Socket = INVALID_SOCKET;
 }
 
-bool FTP_API::Networking::EndPoint::SendBuff(const char* _Buff, const size_t _BuffSize)
+bool FTP_API::Networking::EndPoint::SendBuff(const uint8_t* _Buff, const size_t _BuffSize)
 {
 	if (Socket == INVALID_SOCKET)
 	{
@@ -214,7 +201,7 @@ bool FTP_API::Networking::EndPoint::SendBuff(const char* _Buff, const size_t _Bu
 
 	do
 	{
-		size_t _ReturnValue = send(Socket, _Buff, (int)(_BuffSize), (int)(NULL));
+		size_t _ReturnValue = send(Socket, (const char*)(_Buff), (int)(_BuffSize), (int)(NULL));
 
 		if (_ReturnValue == SOCKET_ERROR)
 		{
@@ -227,17 +214,857 @@ bool FTP_API::Networking::EndPoint::SendBuff(const char* _Buff, const size_t _Bu
 	return true;
 }
 
-bool FTP_API::Networking::EndPoint::RecvBuff(char* _Buff, const size_t _BuffSize)
+bool FTP_API::Networking::EndPoint::SendInt8(const int8_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendInt16(const int16_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendInt32(const int32_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendInt64(const int64_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendUInt8(const uint8_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendUInt16(const uint16_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendUInt32(const uint32_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::SendUInt64(const uint64_t _Value)
+{
+	const uint8_t* _Data = (const uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!SendBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!SendBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!SendBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvBuff(uint8_t* _Buff, const size_t _BuffSize)
 {
 	if (Socket == INVALID_SOCKET)
 	{
 		return false;
 	}
 
-	if (recv(Socket, _Buff, (int)(_BuffSize), MSG_WAITALL) == SOCKET_ERROR)
+	if (recv(Socket, (char*)(_Buff), (int)(_BuffSize), MSG_WAITALL) == SOCKET_ERROR)
 	{
 		return false;
 	}
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvInt8(int8_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvInt16(int16_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvInt32(int32_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvInt64(int64_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvUInt8(uint8_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvUInt16(uint16_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvUInt32(uint32_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+#endif
+
+	return true;
+}
+
+bool FTP_API::Networking::EndPoint::RecvUInt64(uint64_t& _Value)
+{
+	uint8_t* _Data = (uint8_t*)(&_Value);
+
+#ifdef FTP_API_LITTLE_ENDIAN
+
+	if (!RecvBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+#endif
+
+#ifdef FTP_API_BIG_ENDIAN
+
+	if (!RecvBuff(&_Data[0], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[1], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[2], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[3], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[4], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[5], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[6], 1))
+	{
+		return false;
+	}
+
+	if (!RecvBuff(&_Data[7], 1))
+	{
+		return false;
+	}
+
+#endif
 
 	return true;
 }
@@ -249,7 +1076,7 @@ FTP_API::Networking::EndPoint::operator const SOCKET() const
 
 FTP_API::Networking::EndPoint& FTP_API::Networking::EndPoint::operator= (EndPoint&& _Other) noexcept
 {
-	FTP_API_ASSERT_MSG(Socket == INVALID_SOCKET, FTP_API_STRING_TYPE("Move failed on non empty EndPoint object!"));
+	FTP_API_ASSERT_MSG(Socket == INVALID_SOCKET, "Move failed on non empty EndPoint object!");
 
 	Socket = _Other.Socket;
 
