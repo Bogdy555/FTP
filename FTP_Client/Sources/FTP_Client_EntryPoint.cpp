@@ -113,12 +113,41 @@ int main(const int _ArgumentsCount, const char** _Arguments)
 			return -1;
 		}
 
+		if (!FTP_API::FileSystem::SaveFile(_Arguments[FTP_Client::InputParser::_FileNameIndex], _FileLength, _FileData))
+		{
+			delete[] _FileData;
+
+			FTP_API_PRINT_LINE("Could not save the file");
+
+			FTP_Client::ServerConnection.Disconnect();
+			FTP_API_WIN_CALL(FTP_API::Networking::Stop());
+
+			return -1;
+		}
+
+		delete[] _FileData;
+
 		break;
 	}
 	case FTP_Client::InputParser::_UploadAction:
 	{
-		if (!FTP_API::Protocol::RenderUploadRequest(FTP_Client::ServerConnection, _Arguments[FTP_Client::InputParser::_PassWordIndex], _Arguments[FTP_Client::InputParser::_FileNameIndex], 0, nullptr))
+		size_t _FileLength = 0;
+		uint8_t* _FileData = nullptr;
+
+		if (!FTP_API::FileSystem::LoadFile(_Arguments[FTP_Client::InputParser::_FileNameIndex], _FileLength, _FileData))
 		{
+			FTP_API_PRINT_LINE("Could not load the file");
+
+			FTP_Client::ServerConnection.Disconnect();
+			FTP_API_WIN_CALL(FTP_API::Networking::Stop());
+
+			return -1;
+		}
+
+		if (!FTP_API::Protocol::RenderUploadRequest(FTP_Client::ServerConnection, _Arguments[FTP_Client::InputParser::_PassWordIndex], _Arguments[FTP_Client::InputParser::_FileNameIndex], _FileLength, _FileData))
+		{
+			delete[] _FileData;
+
 			FTP_API_PRINT_LINE("Unexpected error");
 
 			FTP_Client::ServerConnection.Disconnect();
@@ -126,6 +155,8 @@ int main(const int _ArgumentsCount, const char** _Arguments)
 
 			return -1;
 		}
+
+		delete[] _FileData;
 
 		if (!FTP_API::Protocol::ParseUploadReply(FTP_Client::ServerConnection))
 		{

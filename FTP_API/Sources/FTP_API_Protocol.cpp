@@ -12,7 +12,7 @@ bool FTP_API::Protocol::RenderDownloadRequest(Networking::EndPoint& _ServerConne
 	return true;
 }
 
-bool FTP_API::Protocol::RenderUploadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName, const uint32_t _FileSize, const uint8_t* _FileData)
+bool FTP_API::Protocol::RenderUploadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName, const uint32_t _FileLength, const uint8_t* _FileData)
 {
 	return true;
 }
