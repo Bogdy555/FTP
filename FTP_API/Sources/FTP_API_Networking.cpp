@@ -641,7 +641,7 @@ bool FTP_API::Networking::EndPoint::RecvBuff(uint8_t* _Buff, const size_t _BuffS
 		return false;
 	}
 
-	if (recv(Socket, (char*)(_Buff), (int)(_BuffSize), MSG_WAITALL) == SOCKET_ERROR)
+	if (recv(Socket, (char*)(_Buff), (int)(_BuffSize), MSG_WAITALL) != _BuffSize)
 	{
 		return false;
 	}

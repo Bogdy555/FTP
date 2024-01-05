@@ -24,7 +24,7 @@ namespace FTP_API
 
 		bool RenderListFilesRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord);
 		bool RenderDownloadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName);
-		bool RenderUploadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName, const uint32_t _FileLength, const uint8_t* _FileData);
+		bool RenderUploadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName, const size_t _FileLength, const uint8_t* _FileData);
 
 		bool RenderListFilesReply(Networking::EndPoint& _ClientConnection);
 		bool RenderDownloadReply(Networking::EndPoint& _ClientConnection);

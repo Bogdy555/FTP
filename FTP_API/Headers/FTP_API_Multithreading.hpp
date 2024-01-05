@@ -44,7 +44,7 @@ namespace FTP_API
 			~Thread();
 
 			bool Spawn(const ThreadFnc _Function, void* _Params);
-			void Wait();
+			void Join();
 
 			FTP_API_WIN_CALL(operator const HANDLE() const);
 

@@ -35,7 +35,7 @@ bool FTP_API::Multithreading::Thread::Spawn(const ThreadFnc _Function, void* _Pa
 	return true;
 }
 
-void FTP_API::Multithreading::Thread::Wait()
+void FTP_API::Multithreading::Thread::Join()
 {
 	if (!Handle)
 	{
@@ -181,7 +181,7 @@ bool FTP_API::Multithreading::Thread::Spawn(const ThreadFnc _Function, void* _Pa
 	return true;
 }
 
-void FTP_API::Multithreading::Thread::Wait()
+void FTP_API::Multithreading::Thread::Join()
 {
 	if (!Created)
 	{
