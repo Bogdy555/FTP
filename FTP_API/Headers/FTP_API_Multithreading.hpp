@@ -24,6 +24,10 @@
 
 
 
+#pragma pack(pop)
+
+
+
 namespace FTP_API
 {
 
@@ -99,6 +103,10 @@ namespace FTP_API
 	}
 
 }
+
+
+
+#pragma pack(push, 1)
 
 
 
