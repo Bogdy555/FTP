@@ -26,13 +26,13 @@ namespace FTP_API
 		bool RenderDownloadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName);
 		bool RenderUploadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName, const size_t _FileLength, const uint8_t* _FileData);
 
-		bool RenderListFilesReply(Networking::EndPoint& _ClientConnection);
-		bool RenderDownloadReply(Networking::EndPoint& _ClientConnection);
-		bool RenderUploadReply(Networking::EndPoint& _ClientConnection);
+		bool RenderListFilesReply(Networking::EndPoint& _ClientConnection, const bool _Status, const std::vector<std::string>& _FileNames);
+		bool RenderDownloadReply(Networking::EndPoint& _ClientConnection, const bool _Status, const size_t _FileLength, const uint8_t* _FileData);
+		bool RenderUploadReply(Networking::EndPoint& _ClientConnection, const bool _Status);
 
-		bool ParseListFilesRequest(Networking::EndPoint& _ClientConnection);
-		bool ParseDownloadRequest(Networking::EndPoint& _ClientConnection);
-		bool ParseUploadRequest(Networking::EndPoint& _ClientConnection);
+		bool ParseListFilesRequest(Networking::EndPoint& _ClientConnection, std::string& _PassWord);
+		bool ParseDownloadRequest(Networking::EndPoint& _ClientConnection, std::string& _PassWord, std::string& _FileName);
+		bool ParseUploadRequest(Networking::EndPoint& _ClientConnection, std::string& _PassWord, std::string& _FileName, size_t& _FileLength, BytesBuffer& _FileData);
 
 		bool ParseListFilesReply(Networking::EndPoint& _ServerConnection, std::vector<std::string>& _FileNames);
 		bool ParseDownloadReply(Networking::EndPoint& _ServerConnection, size_t& _FileLength, BytesBuffer& _FileData);
