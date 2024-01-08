@@ -21,7 +21,7 @@ FTP_API::Networking::EndPoint FTP_Server::ListeningSocket;
 
 
 
-FTP_API_THREAD_RETURN_TYPE ClientThread(void* _Data)
+FTP_API_THREAD_RETURN_TYPE FTP_API_WIN_CALL(__stdcall) ClientThread(void* _Data)
 {
 	FTP_API::Networking::EndPoint& _Client = *(FTP_API::Networking::EndPoint*)(_Data);
 
@@ -108,7 +108,7 @@ FTP_API_THREAD_RETURN_TYPE ClientThread(void* _Data)
 
 
 
-FTP_API_THREAD_RETURN_TYPE ListenThread(void* _Data)
+FTP_API_THREAD_RETURN_TYPE FTP_API_WIN_CALL(__stdcall) ListenThread(void* _Data)
 {
 	FTP_Server::OnMutex.Lock();
 
@@ -182,7 +182,7 @@ FTP_API_THREAD_RETURN_TYPE ListenThread(void* _Data)
 
 
 
-FTP_API_THREAD_RETURN_TYPE CLIThread(void* _Data)
+FTP_API_THREAD_RETURN_TYPE FTP_API_WIN_CALL(__stdcall) CLIThread(void* _Data)
 {
 	FTP_Server::OnMutex.Lock();
 
