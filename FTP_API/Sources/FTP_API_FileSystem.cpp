@@ -164,6 +164,12 @@ bool FTP_API::FileSystem::SaveFile(const char* _FileName, const size_t _FileLeng
         return false;
     }
 
+	if (!_FileLength)
+	{
+		close(fd);
+		return true;
+	}
+
     ssize_t bytesWritten = write(fd, _FileData, _FileLength);
     if (bytesWritten != _FileLength)
     {
@@ -201,13 +207,27 @@ bool FTP_API::FileSystem::LoadFile(const char* _FileName, size_t& _FileLength, B
 
     _FileLength = st.st_size;
 
-    _FileData.resize(_FileLength);
+	if (!_FileLength)
+	{
+		close(fd);
+		return true;
+	}
 
-    ssize_t bytesRead = read(fd, _FileData.data(), _FileLength);
+    _FileData = new uint8_t[_FileLength];
+
+	if (!_FileData)
+	{
+		close(fd);
+		_FileLength = 0;
+		return false;
+	}
+
+    size_t bytesRead = read(fd, _FileData, _FileLength);
     if (bytesRead != _FileLength)
     {
         close(fd);
-        _FileData.clear();
+		delete[] _FileData;
+		_FileData = nullptr;
         _FileLength = 0;
         return false;
     }

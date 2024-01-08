@@ -37,6 +37,9 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 
 
