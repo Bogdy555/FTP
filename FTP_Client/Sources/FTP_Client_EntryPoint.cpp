@@ -22,6 +22,7 @@ int main(const int _ArgumentsCount, const char** _Arguments)
 		FTP_API_PRINT_LINE("\tlist_files password");
 		FTP_API_PRINT_LINE("\tdownload password file_name");
 		FTP_API_PRINT_LINE("\tupload password file_name");
+		FTP_API_PRINT_LINE("\tremove password file_name");
 
 		return -1;
 	}
@@ -159,6 +160,30 @@ int main(const int _ArgumentsCount, const char** _Arguments)
 		delete[] _FileData;
 
 		if (!FTP_API::Protocol::ParseUploadReply(FTP_Client::ServerConnection))
+		{
+			FTP_API_PRINT_LINE("Unexpected error");
+
+			FTP_Client::ServerConnection.Disconnect();
+			FTP_API_WIN_CALL(FTP_API::Networking::Stop());
+
+			return -1;
+		}
+
+		break;
+	}
+	case FTP_Client::InputParser::_RemoveAction:
+	{
+		if (!FTP_API::Protocol::RenderRemoveRequest(FTP_Client::ServerConnection, _Arguments[FTP_Client::InputParser::_PassWordIndex], _Arguments[FTP_Client::InputParser::_FileNameIndex]))
+		{
+			FTP_API_PRINT_LINE("Unexpected error");
+
+			FTP_Client::ServerConnection.Disconnect();
+			FTP_API_WIN_CALL(FTP_API::Networking::Stop());
+
+			return -1;
+		}
+
+		if (!FTP_API::Protocol::ParseRemoveReply(FTP_Client::ServerConnection))
 		{
 			FTP_API_PRINT_LINE("Unexpected error");
 

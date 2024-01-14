@@ -29,7 +29,8 @@ namespace FTP_Client
 			_NullAction = 0,
 			_ListFilesAction = 1,
 			_DownloadAction = 2,
-			_UploadAction = 3
+			_UploadAction = 3,
+			_RemoveAction = 4
 		};
 
 		const uint8_t GetActionType(const char* _Argument);

@@ -34,7 +34,6 @@ bool FTP_API::Protocol::RenderListFilesRequest(Networking::EndPoint& _ServerConn
 
 bool FTP_API::Protocol::RenderDownloadRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName)
 {
-
 	if (_ServerConnection == INVALID_SOCKET)
 	{
 		return false;
@@ -143,6 +142,51 @@ bool FTP_API::Protocol::RenderUploadRequest(Networking::EndPoint& _ServerConnect
 	return true;
 }
 
+bool FTP_API::Protocol::RenderRemoveRequest(Networking::EndPoint& _ServerConnection, const char* _PassWord, const char* _FileName)
+{
+	if (_ServerConnection == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	if (_PassWord == nullptr || _PassWord[0] == '\0')
+	{
+		return false;
+	}
+
+	if (_FileName == nullptr || _FileName[0] == '\0')
+	{
+		return false;
+	}
+
+	if (!_ServerConnection.SendUInt8(_RemoveRequest))
+	{
+		return false;
+	}
+
+	if (!_ServerConnection.SendUInt32((uint32_t)(strlen(_PassWord))))
+	{
+		return false;
+	}
+
+	if (!_ServerConnection.SendBuff((const uint8_t*)(_PassWord), strlen(_PassWord)))
+	{
+		return false;
+	}
+
+	if (!_ServerConnection.SendUInt32((uint32_t)(strlen(_FileName))))
+	{
+		return false;
+	}
+
+	if (!_ServerConnection.SendBuff((const uint8_t*)(_FileName), strlen(_FileName)))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 bool FTP_API::Protocol::RenderListFilesReply(Networking::EndPoint& _ClientConnection, const bool _Status, const std::vector<std::string>& _FileNames)
 {
 	if (_ClientConnection == INVALID_SOCKET)
@@ -219,6 +263,26 @@ bool FTP_API::Protocol::RenderDownloadReply(Networking::EndPoint& _ClientConnect
 }
 
 bool FTP_API::Protocol::RenderUploadReply(Networking::EndPoint& _ClientConnection, const bool _Status)
+{
+	if (_ClientConnection == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	if (!_Status)
+	{
+		return _ClientConnection.SendUInt8(0);
+	}
+
+	if (!_ClientConnection.SendUInt8(1))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool FTP_API::Protocol::RenderRemoveReply(Networking::EndPoint& _ClientConnection, const bool _Status)
 {
 	if (_ClientConnection == INVALID_SOCKET)
 	{
@@ -509,6 +573,97 @@ bool FTP_API::Protocol::ParseUploadRequest(Networking::EndPoint& _ClientConnecti
 	return true;
 }
 
+bool FTP_API::Protocol::ParseRemoveRequest(Networking::EndPoint& _ClientConnection, std::string& _PassWord, std::string& _FileName)
+{
+	_PassWord.clear();
+	_FileName.clear();
+
+	if (_ClientConnection == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	size_t _PassWordLength = 0;
+
+	{
+		uint32_t _ProtocolPassWordLength = 0;
+
+		if (!_ClientConnection.RecvUInt32(_ProtocolPassWordLength))
+		{
+			return false;
+		}
+
+		if (!_ProtocolPassWordLength)
+		{
+			return false;
+		}
+
+		_PassWordLength = _ProtocolPassWordLength;
+	}
+
+	char* _ProtocolPassWord = new char[_PassWordLength + 1];
+
+	if (!_ProtocolPassWord)
+	{
+		return false;
+	}
+
+	if (!_ClientConnection.RecvBuff((uint8_t*)(_ProtocolPassWord), _PassWordLength))
+	{
+		delete[] _ProtocolPassWord;
+		return false;
+	}
+
+	_ProtocolPassWord[_PassWordLength] = '\0';
+
+	_PassWord = _ProtocolPassWord;
+
+	delete[] _ProtocolPassWord;
+
+	size_t _FileNameLength = 0;
+
+	{
+		uint32_t _ProtocolFileNameLength = 0;
+
+		if (!_ClientConnection.RecvUInt32(_ProtocolFileNameLength))
+		{
+			_PassWord.clear();
+			return false;
+		}
+
+		if (!_ProtocolFileNameLength)
+		{
+			_PassWord.clear();
+			return false;
+		}
+
+		_FileNameLength = _ProtocolFileNameLength;
+	}
+
+	char* _ProtocolFileName = new char[_FileNameLength + 1];
+
+	if (!_ProtocolFileName)
+	{
+		_PassWord.clear();
+		return false;
+	}
+
+	if (!_ClientConnection.RecvBuff((uint8_t*)(_ProtocolFileName), _FileNameLength))
+	{
+		delete[] _ProtocolFileName;
+		_PassWord.clear();
+		return false;
+	}
+
+	_ProtocolFileName[_FileNameLength] = '\0';
+
+	_FileName = _ProtocolFileName;
+
+	delete[] _ProtocolFileName;
+
+	return true;
+}
+
 bool FTP_API::Protocol::ParseListFilesReply(Networking::EndPoint& _ServerConnection, std::vector<std::string>& _FileNames)
 {
 	_FileNames.clear();
@@ -652,6 +807,30 @@ bool FTP_API::Protocol::ParseDownloadReply(Networking::EndPoint& _ServerConnecti
 }
 
 bool FTP_API::Protocol::ParseUploadReply(Networking::EndPoint& _ServerConnection)
+{
+	if (_ServerConnection == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	{
+		uint8_t _RequestStatus;
+
+		if (!_ServerConnection.RecvUInt8(_RequestStatus))
+		{
+			return false;
+		}
+
+		if (_RequestStatus != 1)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool FTP_API::Protocol::ParseRemoveReply(Networking::EndPoint& _ServerConnection)
 {
 	if (_ServerConnection == INVALID_SOCKET)
 	{

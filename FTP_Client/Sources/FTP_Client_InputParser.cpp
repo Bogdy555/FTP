@@ -24,6 +24,11 @@ const uint8_t FTP_Client::InputParser::GetActionType(const char* _Argument)
 		return _UploadAction;
 	}
 
+	if (strcmp(_Argument, "remove") == 0)
+	{
+		return _RemoveAction;
+	}
+
 	return _NullAction;
 }
 
@@ -75,6 +80,25 @@ bool FTP_Client::InputParser::CheckArgumentsValidity(const size_t _ArgumentsCoun
 		break;
 	}
 	case _UploadAction:
+	{
+		if (_ArgumentsCount != 6)
+		{
+			return false;
+		}
+
+		if (_Arguments[_PassWordIndex][0] == '\0')
+		{
+			return false;
+		}
+
+		if (_Arguments[_FileNameIndex][0] == '\0')
+		{
+			return false;
+		}
+
+		break;
+	}
+	case _RemoveAction:
 	{
 		if (_ArgumentsCount != 6)
 		{

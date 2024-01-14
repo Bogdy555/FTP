@@ -66,6 +66,15 @@ FTP_API_THREAD_RETURN_TYPE FTP_API_WIN_CALL(__stdcall) ClientThread(void* _Data)
 
 		break;
 	}
+	case FTP_API::Protocol::_RemoveRequest:
+	{
+		if (!FTP_API::Protocol::ParseRemoveRequest(_Client, _PassWord, _FileName))
+		{
+			_Error = true;
+		}
+
+		break;
+	}
 	default:
 	{
 		_Error = true;
@@ -457,6 +466,22 @@ int main(const int _ArgumentsCount, const char** _Arguments)
 				}
 
 				FTP_API::Protocol::RenderUploadReply(*_Client, _ReplyStatus);
+
+				break;
+			}
+			case FTP_API::Protocol::_RemoveRequest:
+			{
+				bool _ReplyStatus = false;
+
+				if (_PassWord == _Arguments[FTP_Server::InputParser::_PassWordIndex])
+				{
+					if (remove(_FileName.c_str()) == 0)
+					{
+						_ReplyStatus = true;
+					}
+				}
+
+				FTP_API::Protocol::RenderRemoveReply(*_Client, _ReplyStatus);
 
 				break;
 			}
